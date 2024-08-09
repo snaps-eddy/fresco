@@ -37,18 +37,15 @@ object ExampleDatabase {
           ExampleCategory(
               "Drawee",
               listOf(
-                  ExampleItem("Media Provider") { DraweeMediaPickerFragment() },
-                  ExampleItem("Scale Type") { DraweeScaleTypeFragment() },
                   ExampleItem("Simple DraweeSpan") { DraweeSpanSimpleTextFragment() },
                   ExampleItem("Rounded Corners") { DraweeRoundedCornersFragment() },
                   ExampleItem("Placeholder, Progress, Failure") { DraweeHierarchyFragment() },
-                  ExampleItem("Rotation") { DraweeRotationFragment() },
                   ExampleItem("Recycler View") { DraweeRecyclerViewFragment() },
                   ExampleItem("Drawee Transition") { DraweeTransitionFragment() },
                   ExampleItem("Retaining Data Source Supplier") {
                     RetainingDataSourceSupplierFragment()
                   },
-                  ExampleItem("Multi URI") { MultiUriFragment() })),
+              )),
           ExampleCategory(
               "Image Pipeline",
               listOf(
@@ -93,6 +90,8 @@ object ExampleDatabase {
                       "Vito Litho: Listener",
                       FrescoVitoLithoListenerExample,
                       "Vito Litho component with listener."),
+                  ExampleItem("Scale Type") { VitoScaleTypeFragment() },
+                  ExampleItem("Rotation") { VitoRotationFragment() },
                   ExampleItem("Vito Litho: Gallery") { FrescoVitoLithoGalleryFragment() },
                   ExampleItem("Vito View: Simple") { VitoViewSimpleFragment() },
                   ExampleItem("Vito View: Simple 2") { VitoSimpleFragment() },
@@ -108,6 +107,8 @@ object ExampleDatabase {
                   ExampleItem("Vito Text Span") { VitoSpanFragment() },
                   ExampleItem(
                       "Vito Litho DrawableImageSource", FrescoVitoLithoDrawableImageSourceExample),
+                  ExampleItem("Media Provider") { VitoMediaPickerFragment() },
+                  ExampleItem("Multi URI") { MultiUriFragment() },
               )),
           ExampleCategory(
               "Vito Renderer",

@@ -107,7 +107,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  *       dynamically create buckets on demand.
  * </ul>
  */
-@Nullsafe(Nullsafe.Mode.STRICT)
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class BasePool<V> implements Pool<V> {
   private final Class<?> TAG = this.getClass();
 
@@ -287,7 +287,6 @@ public abstract class BasePool<V> implements Pool<V> {
       }
     }
 
-    // NULLSAFE_FIXME[Return Not Nullable]
     return value;
   }
 

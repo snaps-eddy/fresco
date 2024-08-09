@@ -38,7 +38,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 /** Cache that manages disk storage. */
 @ThreadSafe
-@Nullsafe(Nullsafe.Mode.STRICT)
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DiskStorageCache implements FileCache, DiskTrimmable {
 
   private static final Class<?> TAG = DiskStorageCache.class;
@@ -59,7 +59,7 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
   private final CountDownLatch mCountDownLatch;
   private long mCacheSizeLimit;
 
-  private final CacheEventListener mCacheEventListener;
+  @Nullable private final CacheEventListener mCacheEventListener;
 
   @GuardedBy("mLock")
   // All resourceId stored on disk (if any).
@@ -145,7 +145,7 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
       DiskStorage diskStorage,
       EntryEvictionComparatorSupplier entryEvictionComparatorSupplier,
       Params params,
-      CacheEventListener cacheEventListener,
+      @Nullable CacheEventListener cacheEventListener,
       CacheErrorLogger cacheErrorLogger,
       @Nullable DiskTrimmableRegistry diskTrimmableRegistry,
       final Executor executorForBackgrountInit,
@@ -256,11 +256,15 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
           }
         }
         if (resource == null) {
-          mCacheEventListener.onMiss(cacheEvent);
+          if (mCacheEventListener != null) {
+            mCacheEventListener.onMiss(cacheEvent);
+          }
           mResourceIndex.remove(resourceId);
         } else {
           Preconditions.checkNotNull(resourceId);
-          mCacheEventListener.onHit(cacheEvent);
+          if (mCacheEventListener != null) {
+            mCacheEventListener.onHit(cacheEvent);
+          }
           mResourceIndex.add(resourceId);
         }
         return resource;
@@ -269,7 +273,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
       mCacheErrorLogger.logError(
           CacheErrorLogger.CacheErrorCategory.GENERIC_IO, TAG, "getResource", ioe);
       cacheEvent.setException(ioe);
-      mCacheEventListener.onReadException(cacheEvent);
+      if (mCacheEventListener != null) {
+        mCacheEventListener.onReadException(cacheEvent);
+      }
       return null;
     } finally {
       cacheEvent.recycle();
@@ -302,9 +308,10 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
       }
     } catch (IOException e) {
       SettableCacheEvent cacheEvent =
-          // NULLSAFE_FIXME[Parameter Not Nullable]
           SettableCacheEvent.obtain().setCacheKey(key).setResourceId(resourceId).setException(e);
-      mCacheEventListener.onReadException(cacheEvent);
+      if (mCacheEventListener != null) {
+        mCacheEventListener.onReadException(cacheEvent);
+      }
       cacheEvent.recycle();
       return false;
     }
@@ -337,7 +344,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
     // Write to a temp file, then move it into place. This allows more parallelism
     // when writing files.
     SettableCacheEvent cacheEvent = SettableCacheEvent.obtain().setCacheKey(key);
-    mCacheEventListener.onWriteAttempt(cacheEvent);
+    if (mCacheEventListener != null) {
+      mCacheEventListener.onWriteAttempt(cacheEvent);
+    }
     String resourceId;
     synchronized (mLock) {
       // for multiple resource ids associated with the same image, we only write one file
@@ -352,7 +361,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
         // Committing the file is synchronized
         BinaryResource resource = endInsert(inserter, key, resourceId);
         cacheEvent.setItemSize(resource.size()).setCacheSize(mCacheStats.getSize());
-        mCacheEventListener.onWriteSuccess(cacheEvent);
+        if (mCacheEventListener != null) {
+          mCacheEventListener.onWriteSuccess(cacheEvent);
+        }
         return resource;
       } finally {
         if (!inserter.cleanUp()) {
@@ -361,7 +372,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
       }
     } catch (IOException ioe) {
       cacheEvent.setException(ioe);
-      mCacheEventListener.onWriteException(cacheEvent);
+      if (mCacheEventListener != null) {
+        mCacheEventListener.onWriteException(cacheEvent);
+      }
       FLog.e(TAG, "Failed inserting a file into the cache", ioe);
       throw ioe;
     } finally {
@@ -418,7 +431,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
                       .setEvictionReason(CacheEventListener.EvictionReason.CONTENT_STALE)
                       .setItemSize(entryRemovedSize)
                       .setCacheSize(cacheSizeBeforeClearance - itemsRemovedSize);
-              mCacheEventListener.onEviction(cacheEvent);
+              if (mCacheEventListener != null) {
+                mCacheEventListener.onEviction(cacheEvent);
+              }
               cacheEvent.recycle();
             }
           } else {
@@ -505,7 +520,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
                 .setItemSize(deletedSize)
                 .setCacheSize(cacheSizeBeforeClearance - sumItemSizes)
                 .setCacheLimit(desiredSize);
-        mCacheEventListener.onEviction(cacheEvent);
+        if (mCacheEventListener != null) {
+          mCacheEventListener.onEviction(cacheEvent);
+        }
         cacheEvent.recycle();
       }
     }
@@ -570,7 +587,9 @@ public class DiskStorageCache implements FileCache, DiskTrimmable {
       try {
         mStorage.clearAll();
         mResourceIndex.clear();
-        mCacheEventListener.onCleared();
+        if (mCacheEventListener != null) {
+          mCacheEventListener.onCleared();
+        }
       } catch (IOException | NullPointerException e) {
         mCacheErrorLogger.logError(
             CacheErrorLogger.CacheErrorCategory.EVICTION, TAG, "clearAll: " + e.getMessage(), e);

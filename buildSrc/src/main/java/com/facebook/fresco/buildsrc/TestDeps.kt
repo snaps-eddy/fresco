@@ -8,7 +8,7 @@
 package com.facebook.fresco.buildsrc
 
 object TestDeps {
-  const val assertjCore = "org.assertj:assertj-core:2.9.0"
+  const val assertjCore = "org.assertj:assertj-core:2.9.1"
 
   const val junit = "junit:junit:4.12"
 
@@ -19,7 +19,7 @@ object TestDeps {
 
   const val festAssertCore = "org.easytesting:fest-assert-core:2.0M10"
 
-  const val robolectric = "org.robolectric:robolectric:4.12"
+  const val robolectric = "org.robolectric:robolectric:4.12.2"
 
   const val truth = "com.google.truth:truth:1.0.1"
 

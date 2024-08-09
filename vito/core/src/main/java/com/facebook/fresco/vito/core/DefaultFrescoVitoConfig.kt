@@ -43,18 +43,10 @@ constructor(override val prefetchConfig: PrefetchConfig = DefaultPrefetchConfig(
   open class DefaultPrefetchConfig : PrefetchConfig {
     override fun prefetchInOnPrepare(): Boolean = true
 
+    override fun prefetchInOnBoundsDefinedForDynamicSize(): Boolean = false
+
     override fun prefetchTargetOnPrepare(): PrefetchTarget = PrefetchTarget.MEMORY_DECODED
 
-    override fun cancelOnPreparePrefetchWhenWorkingRangePrefetch(): Boolean = true
-
-    override fun cancelPrefetchWhenFetched(): Boolean = true
-
-    override fun prefetchWithWorkingRange(): Boolean = true
-
-    override fun prefetchWorkingRangeSize(): Int = 3
-
-    override fun prefetchTargetWorkingRange(): PrefetchTarget = PrefetchTarget.MEMORY_DECODED
-
-    override fun prioritizeWithWorkingRange(): Boolean = false
+    override fun prefetchTargetOnBoundsDefined(): PrefetchTarget = PrefetchTarget.MEMORY_DECODED
   }
 }

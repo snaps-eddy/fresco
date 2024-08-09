@@ -6,6 +6,7 @@
  */
 
 import com.facebook.fresco.buildsrc.Deps
+import com.facebook.fresco.buildsrc.GradleDeps
 import com.facebook.fresco.buildsrc.SampleDeps
 import com.facebook.fresco.buildsrc.TestDeps
 
@@ -18,15 +19,12 @@ kotlin {
 }
 
 android {
+    ndkVersion GradleDeps.Native.version
+
     buildToolsVersion FrescoConfig.buildToolsVersion
     compileSdkVersion FrescoConfig.compileSdkVersion
 
     namespace "com.facebook.fresco.samples.showcase"
-
-    dexOptions {
-        maxProcessCount 2
-        javaMaxHeapSize "1g"
-    }
 
     defaultConfig {
         applicationId "com.facebook.fresco.samples.showcase"

@@ -6,15 +6,23 @@
  */
 
 import com.facebook.fresco.buildsrc.Deps
+import com.facebook.fresco.buildsrc.GradleDeps
 import com.facebook.fresco.buildsrc.TestDeps
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+kotlin {
+    jvmToolchain(11)
+}
 
 dependencies {
     compileOnly Deps.AndroidX.androidxAnnotation
     compileOnly Deps.inferAnnotation
     compileOnly Deps.jsr305
     compileOnly Deps.javaxAnnotation
+
+    api project(':ui-core')
 
     implementation project(':fbcore')
     implementation project(':imagepipeline')
@@ -39,6 +47,8 @@ dependencies {
 }
 
 android {
+    ndkVersion GradleDeps.Native.version
+
     buildToolsVersion FrescoConfig.buildToolsVersion
     compileSdkVersion FrescoConfig.compileSdkVersion
 
