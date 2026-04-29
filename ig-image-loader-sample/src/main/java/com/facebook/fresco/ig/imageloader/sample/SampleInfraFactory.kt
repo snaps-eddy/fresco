@@ -95,10 +95,6 @@ object SampleInfraFactory {
               ) {
                 // No-op
               }
-
-              override fun submitJobToUiCriticalThread(runnable: LoggedRunnable) {
-                // No-op
-              }
             }
         CriticalPath::class.java.getDeclaredField("initialized").apply {
           isAccessible = true
