@@ -19,6 +19,7 @@ import com.facebook.common.internal.Suppliers
 import com.facebook.common.time.RealtimeSinceBootClock
 import com.facebook.fresco.animation.bitmap.preparation.ondemandanimation.FrameLoaderListener
 import com.facebook.fresco.animation.drawable.AnimatedDrawable2
+import com.facebook.fresco.vito.core.AnimatedImagePerfLoggingListener
 import com.facebook.imagepipeline.animated.base.AnimatedDrawableBackend
 import com.facebook.imagepipeline.animated.base.AnimatedImageResult
 import com.facebook.imagepipeline.animated.factory.AnimatedFactory
@@ -54,6 +55,7 @@ constructor(
     private val enableBufferFrameLoaderFix: Boolean = false,
     private val frameLoaderListener: FrameLoaderListener? = null,
     private val enableSingleFrameRendering: Boolean = false,
+    private val animatedImagePerfLoggingListener: AnimatedImagePerfLoggingListener? = null,
 ) : AnimatedFactory {
 
   private var animatedDrawableBackendProvider: AnimatedDrawableBackendProvider? = null
@@ -93,7 +95,7 @@ constructor(
         Suppliers.of(downscaleFrameToDrawableDimensions),
         Suppliers.of(animationFpsLimit),
         Suppliers.of(bufferLengthMilliseconds),
-        null,
+        animatedImagePerfLoggingListener,
         enableBufferFrameLoaderFix,
         frameLoaderListener,
         enableSingleFrameRendering,

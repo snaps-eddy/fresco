@@ -89,6 +89,8 @@ object AnimatedFactoryProvider {
             Class.forName(
                 "com.facebook.fresco.animation.bitmap.preparation.ondemandanimation.FrameLoaderListener"
             )
+        val animatedImagePerfLoggingListenerClass =
+            Class.forName("com.facebook.fresco.vito.core.AnimatedImagePerfLoggingListener")
         val constructor =
             clazz.getConstructor(
                 PlatformBitmapFactory::class.java,
@@ -102,6 +104,7 @@ object AnimatedFactoryProvider {
                 java.lang.Boolean.TYPE,
                 frameLoaderListenerClass,
                 java.lang.Boolean.TYPE,
+                animatedImagePerfLoggingListenerClass,
             )
         impl =
             constructor.newInstance(
@@ -116,6 +119,7 @@ object AnimatedFactoryProvider {
                 enableBufferFrameLoaderFix,
                 null,
                 enableSingleFrameRendering,
+                null,
             ) as AnimatedFactory
       } catch (e: Throwable) {
         // Head in the sand
