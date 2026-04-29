@@ -176,7 +176,6 @@ public abstract class AbstractDraweeController<T, INFO>
     // clear hierarchy and controller overlay
     if (mSettableDraweeHierarchy != null) {
       mSettableDraweeHierarchy.reset();
-      // NULLSAFE_FIXME[Parameter Not Nullable]
       mSettableDraweeHierarchy.setControllerOverlay(null);
       mSettableDraweeHierarchy = null;
     }
@@ -282,7 +281,6 @@ public abstract class AbstractDraweeController<T, INFO>
 
   /** Gets accessibility content description. */
   @Override
-  // NULLSAFE_FIXME[Inconsistent Subclass Return Annotation]
   public @Nullable String getContentDescription() {
     return mContentDescription;
   }
@@ -365,7 +363,6 @@ public abstract class AbstractDraweeController<T, INFO>
   public void setHierarchy(@Nullable DraweeHierarchy hierarchy) {
     if (FLog.isLoggable(FLog.VERBOSE)) {
       FLog.v(
-          // NULLSAFE_FIXME[Parameter Not Nullable]
           TAG, "controller %x %s: setHierarchy: %s", System.identityHashCode(this), mId, hierarchy);
     }
     mEventTracker.recordEvent(
@@ -377,7 +374,6 @@ public abstract class AbstractDraweeController<T, INFO>
     }
     // clear the existing hierarchy
     if (mSettableDraweeHierarchy != null) {
-      // NULLSAFE_FIXME[Parameter Not Nullable]
       mSettableDraweeHierarchy.setControllerOverlay(null);
       mSettableDraweeHierarchy = null;
     }
@@ -385,7 +381,6 @@ public abstract class AbstractDraweeController<T, INFO>
     if (hierarchy != null) {
       Preconditions.checkArgument(hierarchy instanceof SettableDraweeHierarchy);
       mSettableDraweeHierarchy = (SettableDraweeHierarchy) hierarchy;
-      // NULLSAFE_FIXME[Parameter Not Nullable]
       mSettableDraweeHierarchy.setControllerOverlay(mControllerOverlay);
     }
   }
@@ -394,7 +389,6 @@ public abstract class AbstractDraweeController<T, INFO>
   protected void setControllerOverlay(@Nullable Drawable controllerOverlay) {
     mControllerOverlay = controllerOverlay;
     if (mSettableDraweeHierarchy != null) {
-      // NULLSAFE_FIXME[Parameter Not Nullable]
       mSettableDraweeHierarchy.setControllerOverlay(mControllerOverlay);
     }
   }
@@ -747,7 +741,6 @@ public abstract class AbstractDraweeController<T, INFO>
   }
 
   @Override
-  // NULLSAFE_FIXME[Inconsistent Subclass Return Annotation]
   public @Nullable Animatable getAnimatable() {
     return (mDrawable instanceof Animatable) ? (Animatable) mDrawable : null;
   }
