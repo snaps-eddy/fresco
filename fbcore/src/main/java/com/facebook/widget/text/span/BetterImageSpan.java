@@ -71,6 +71,7 @@ public class BetterImageSpan extends ReplacementSpan {
     this(drawable, verticalAlignment, new Rect());
   }
 
+  @SuppressWarnings("this-escape")
   public BetterImageSpan(
       Drawable drawable, @BetterImageSpanAlignment int verticalAlignment, Rect margin) {
     mDrawable = drawable;
