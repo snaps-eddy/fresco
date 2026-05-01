@@ -103,4 +103,6 @@ interface FrescoVitoConfig {
   fun enableRetriggerListenersIfImageAlreadySet(): Boolean
 
   fun disableBitmapCacheShortcut(): Boolean = false
+
+  fun useOfferBackOnRelease(): Boolean = false
 }

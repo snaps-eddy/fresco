@@ -168,23 +168,37 @@ class KFrescoController(
       // We didn't -> reset everything and set up new fetch
       // TODO(T105148151): move to new package so that no legacy impl dep
       val imageId: Long = VitoUtils.generateIdentifier()
-      drawable.apply {
-        reset()
-        forceReloadIfImageAlreadySet = forceReload
-        retriggerListenersIfImageAlreadySet = retriggerListeners
+      val d = drawable
+      d.reset()
+      d.forceReloadIfImageAlreadySet = forceReload
+      d.retriggerListenersIfImageAlreadySet = retriggerListeners
 
-        this.imageRequest = imageRequest
-        this.callerContext = callerContext
-        imageListener = listener
-        listenerManager.setVitoImageRequestListener(globalImageRequestListener)
-        listenerManager.setLocalVitoImageRequestListener(vitoImageRequestListener)
+      d.imageRequest = imageRequest
+      d.callerContext = callerContext
+      d.imageListener = listener
+      d.listenerManager.setVitoImageRequestListener(globalImageRequestListener)
+      d.listenerManager.setLocalVitoImageRequestListener(vitoImageRequestListener)
 
-        // Setup local perf data listener
-        val localPerfStateListener = perfDataListener?.let(::ImagePerfDataNotifier)
-        listenerManager.setLocalImagePerfStateListener(localPerfStateListener)
+      // Setup local perf data listener
+      val localPerfStateListener = perfDataListener?.let(::ImagePerfDataNotifier)
+      d.listenerManager.setLocalImagePerfStateListener(localPerfStateListener)
 
-        _imageId = imageId
-        this.viewportDimensions = viewportDimensions
+      d._imageId = imageId
+      d.viewportDimensions = viewportDimensions
+      if (config.useOfferBackOnRelease()) {
+        d.offerBackOnRelease = {
+          val req = d.imageRequest
+          val ref = d.closeable as? CloseableReference<*>
+          if (
+              req != null &&
+                  ref != null &&
+                  CloseableReference.isValid(ref) &&
+                  ref.get() is CloseableImage
+          ) {
+            @Suppress("UNCHECKED_CAST")
+            vitoImagePipeline.returnImageToCache(req, ref as CloseableReference<CloseableImage>)
+          }
+        }
       }
 
       val options: ImageOptions = imageRequest.imageOptions

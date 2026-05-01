@@ -30,6 +30,7 @@ import com.facebook.imagepipeline.common.Priority
 import com.facebook.imagepipeline.datasource.CloseableProducerToDataSourceAdapter
 import com.facebook.imagepipeline.datasource.ProducerToDataSourceAdapter.Companion.create
 import com.facebook.imagepipeline.image.CloseableImage
+import com.facebook.imagepipeline.image.CloseableStaticBitmap
 import com.facebook.imagepipeline.listener.ForwardingRequestListener
 import com.facebook.imagepipeline.listener.ForwardingRequestListener2
 import com.facebook.imagepipeline.listener.RequestListener
@@ -1048,6 +1049,23 @@ class ImagePipeline(
       return null
     }
     return closeableImage
+  }
+
+  /**
+   * Returns an image reference to the bitmap memory cache. Used by Vito on detach to give recently
+   * displayed images a second life in the cache, improving scroll-back hit rate. The image is only
+   * cached if it is still valid and of full quality, to avoid replacing better cached entries with
+   * intermediate or stale images.
+   */
+  fun returnImageToCache(
+      cacheKey: CacheKey,
+      imageReference: CloseableReference<CloseableImage>,
+  ) {
+    if (!CloseableReference.isValid(imageReference)) return
+    val image = imageReference.get() ?: return
+    if (image !is CloseableStaticBitmap) return
+    if (!image.qualityInfo.isOfFullQuality) return
+    CloseableReference.closeSafely(bitmapMemoryCache.cache(cacheKey, imageReference))
   }
 
   fun hasCachedImage(cacheKey: CacheKey?): Boolean {

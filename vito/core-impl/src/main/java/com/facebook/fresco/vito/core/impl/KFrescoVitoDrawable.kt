@@ -70,6 +70,8 @@ class KFrescoVitoDrawable(
 
   var closeable: Closeable? by AutoCleanupDelegate(null, closeableCleanupFunction)
 
+  var offerBackOnRelease: (() -> Unit)? = null
+
   override var refetchRunnable: Runnable? = null
 
   override fun getImagePerfLoggingListener(): ImagePerfLoggingListener? =
@@ -122,6 +124,8 @@ class KFrescoVitoDrawable(
   }
 
   fun reset() {
+    offerBackOnRelease?.invoke()
+    offerBackOnRelease = null
     imageRequest?.let { listenerManager.onRelease(imageId, it, obtainExtras()) }
     imagePerfListener.onImageRelease(this)
     ImageReleaseScheduler.cancelAllReleasing(this)

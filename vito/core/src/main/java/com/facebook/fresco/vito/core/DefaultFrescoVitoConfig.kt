@@ -108,6 +108,8 @@ constructor(override val prefetchConfig: PrefetchConfig = DefaultPrefetchConfig(
 
   override fun disableBitmapCacheShortcut(): Boolean = false
 
+  override fun useOfferBackOnRelease(): Boolean = false
+
   open class DefaultPrefetchConfig : PrefetchConfig {
     override fun prefetchInOnPrepare(): Boolean = true
 
