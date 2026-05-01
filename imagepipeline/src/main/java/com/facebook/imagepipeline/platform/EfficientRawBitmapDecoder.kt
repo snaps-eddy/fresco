@@ -66,7 +66,12 @@ class EfficientRawBitmapDecoder(
       sampleSize: Int,
       colorSpace: ColorSpace?,
   ): Bitmap? {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+    // useBitmapFactoryDecoder gates whether to use BitmapFactory for all API levels or
+    // ImageDecoder (API 28+).
+    if (
+        !platformDecoderOptions.useBitmapFactoryDecoder &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+    ) {
       // On API 28-32 with a non-null colorSpace, fall through to BitmapFactory path
       // because ImageDecoder doesn't support setTargetColorSpace until API 33.
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || colorSpace == null) {
@@ -85,7 +90,8 @@ class EfficientRawBitmapDecoder(
         }
       }
     }
-    // BitmapFactory path for API < 28, or API 28-32 with non-null colorSpace
+    // BitmapFactory path — used for all API levels when useBitmapFactoryDecoder=true,
+    // or API < 28, or API 28-32 with non-null colorSpace
     val options = BitmapFactory.Options()
     options.inSampleSize = sampleSize
     options.inPreferredConfig = bitmapConfig
