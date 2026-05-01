@@ -34,6 +34,11 @@ object ImageSourceSpinner {
                   )
                 },
             "Media" to { callback.invoke(imageUriProvider.getMediaStoreUris(context)) },
+            "GIFs" to
+                {
+                  val gifs = imageUriProvider.sampleGifUris
+                  callback.invoke(List(numEntries) { gifs[it % gifs.size] })
+                },
             "Empty list" to { callback.invoke(emptyList()) },
         )
     )

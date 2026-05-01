@@ -38,7 +38,8 @@ public class VitoViewRecyclerFragment extends BaseShowcaseFragment {
   private static final int SPAN_COUNT = 3;
 
   private @Nullable ResizeOptions mResizeOptions;
-  private ImageOptions.Builder mOptionsBuilder = ImageOptions.create().fadeDurationMs(500);
+  private ImageOptions.Builder mOptionsBuilder =
+      ImageOptions.create().fadeDurationMs(500).autoPlay(true);
 
   @Nullable
   @Override
